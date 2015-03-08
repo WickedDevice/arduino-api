@@ -1,7 +1,9 @@
 #include <WildFire_CC3000.h>
+#include <WildFire.h>
 #include <ccspi.h>
 #include <SPI.h>
 #include <plotly_streaming_wildfire.h>
+WildFire wf;
 
 #define WLAN_SSID       "wifi_network_name"
 #define WLAN_PASS       "wifi_network_password"
@@ -46,9 +48,10 @@ void wifi_connect(){
 
 
 void setup() {
+  wf.begin();
 
   // Open serial communications and wait for port to open:
-  Serial.begin(9600);
+  Serial.begin(115200);
   while (!Serial) {
     ; // wait for serial port to connect. Needed for Leonardo only
   }
