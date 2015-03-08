@@ -38,7 +38,7 @@ bool plotly::init(){
     uint32_t ip = 0;
     Serial.print(F("... Attempting to resolve IP address of plot.ly"));
     while  (ip  ==  0)  {
-        if  (!  cc3000.getHostByName("www.plot.ly\n", &ip))  {
+        if (! cc3000.getHostByName("www.plot.ly", &ip)) {
           Serial.println(F("Couldn't resolve!"));
         }
         delay(500);
@@ -138,9 +138,9 @@ bool plotly::init(){
                 c = client.read();
 
                 Serial.print(c);
+                client.close();
             }
         }
-        client.close();
     }
     return true;
 
