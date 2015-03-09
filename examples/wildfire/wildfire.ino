@@ -2,8 +2,10 @@
 #include <WildFire.h>
 #include <ccspi.h>
 #include <SPI.h>
+#include <TinyWatchdog.h>
 #include <plotly_streaming_wildfire.h>
 WildFire wf;
+TinyWatchdog tinyWDT;
 
 #define WLAN_SSID       "wifi_network_name"
 #define WLAN_PASS       "wifi_network_password"
@@ -19,7 +21,12 @@ char *tokens[nTraces] = {"token_1", "token_2"};
 // arguments: username, api key, streaming token, filename
 plotly graph = plotly("plotly_username", "plotly_api_key", tokens, "your_filename", nTraces);
 
+unsigned long previousMillis = 0;        // will store last time LED was updated
+const long wdt_pet_interval = 1000;           // interval at which to blink (milliseconds)
+
 void wifi_connect(){
+  graph.cc3000.enableTinyWatchdog(14, 1000);
+  
   /* Initialise the module */
   Serial.println(F("\n... Initializing..."));
   if (!graph.cc3000.begin())
@@ -49,7 +56,8 @@ void wifi_connect(){
 
 void setup() {
   wf.begin();
-
+  tinyWDT.begin(500, 10000);
+  
   // Open serial communications and wait for port to open:
   Serial.begin(115200);
   while (!Serial) {
@@ -69,6 +77,12 @@ unsigned long x;
 int y;
 
 void loop() {
+  unsigned long currentMillis = millis();
+  if(currentMillis - previousMillis >= wdt_pet_interval) {
+    previousMillis = currentMillis;  
+    tinyWDT.pet();    
+  }
+  
   graph.plot(millis(), analogRead(A0), tokens[0]);
   graph.plot(millis(), analogRead(A1), tokens[1]);
 

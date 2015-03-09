@@ -4,7 +4,7 @@
 #include <SPI.h>
 #include "plotly_streaming_wildfire.h"
 
-#include <avr/dtostrf.h>
+//#include <avr/dtostrf.h>
 #include <avr/pgmspace.h>
 
 
